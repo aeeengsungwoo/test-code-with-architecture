@@ -1,16 +1,24 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.CertificationCodeNotMatchedException;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.UserStatus;
+import com.example.demo.model.dto.UserCreateDto;
 import com.example.demo.repository.UserEntity;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 
 @TestPropertySource("classpath:test-application.properties")
 @SpringBootTest
@@ -22,6 +30,9 @@ public class UserServiceTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @MockBean
+    private JavaMailSender mailSender;
 
     @BeforeEach
     void setUp() {
@@ -92,4 +103,40 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    void UserCreateDto를_이용하여_유저를_생성할_수_있다(){
+        //given
+        UserCreateDto userCreateDto = UserCreateDto.builder()
+                .email("kok202@naver.com")
+                .address("Seoul")
+                .nickname("kok202-k")
+                .build();
+        //실제 메일 전송하는 부분을 테스트할 수 없기 때문에, 메일 전송 메서드가 호출되어도 테스트 환경에서는 아무것도 하지 않는다.
+        BDDMockito.doNothing().when(mailSender).send(any(SimpleMailMessage.class));
+
+        //when
+        UserEntity result = userService.create(userCreateDto);
+
+        //then
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getStatus()).isEqualTo(UserStatus.PENDING);
+
+    }
+
+    @Test
+    void PENDING_상태의_사용자는_인증_코드를_발급받으면_액티브_상태로_변경된다() {
+        // given: PENDING 상태의 사용자를 설정
+        userService.verifyEmail(2, "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+
+        // then: 사용자의 상태가 ACTIVE로 변경되었는지 확인
+        UserEntity userEntity = userService.getById(2);
+        assertThat(userEntity.getStatus()).isEqualTo(UserStatus.ACTIVE);
+    }
+
+    @Test
+    void PENDING_상태의_사용자는_잘못된_인증_코드를_발급받으면_예외를_던진다() {
+        // when: 잘못된 인증 코드를 사용
+        assertThatThrownBy(() -> userService.verifyEmail(2, "aaaaaa-aaaa-aaaa-aaaaaa-aaaaaaac"))
+        .isInstanceOf(CertificationCodeNotMatchedException.class);
+    }
 }
