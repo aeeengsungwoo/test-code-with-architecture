@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.UserStatus;
-import com.example.demo.model.dto.UserUpdateDto;
-import com.example.demo.repository.UserEntity;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.user.domain.UserStatus;
+import com.example.demo.user.domain.UserUpdateDto;
+import com.example.demo.user.infrastructure.UserEntity;
+import com.example.demo.user.infrastructure.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,6 +90,18 @@ public class UserControllerTest {
         assertThat(userEntity.getStatus()).isEqualTo(UserStatus.ACTIVE);
 
     }
+
+    @Test
+    void 사용자는_인증_코드가_일치하지_않는_경우_권한에러를_내려준다() throws Exception {
+        // given
+
+        mockMvc.perform(get("/api/users/2/verify")
+                        .queryParam("certificationCode","bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbc"))
+                .andExpect(status().isForbidden());
+
+
+    }
+
     @Test
     void 사용자는_내_정보를_수정할_수_있다() throws Exception {
         // given

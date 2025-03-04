@@ -1,6 +1,8 @@
 package com.example.demo.repository;
 
-import com.example.demo.model.UserStatus;
+import com.example.demo.user.domain.UserStatus;
+import com.example.demo.user.infrastructure.UserEntity;
+import com.example.demo.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +50,7 @@ public class UserRepositoryTest {
         // given
 
         //when
-        Optional<UserEntity> result = userRepository.findByEmailAndStatus("kok20@naver.com", UserStatus.ACTIVE);
+        Optional<UserEntity> result = userRepository.findByEmailAndStatus("kok202@naver.com", UserStatus.ACTIVE);
 
         // then
         assertThat(result.isPresent()).isTrue();
