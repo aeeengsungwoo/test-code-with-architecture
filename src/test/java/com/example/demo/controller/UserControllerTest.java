@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.domain.UserUpdateDto;
 import com.example.demo.user.infrastructure.UserEntity;
-import com.example.demo.user.infrastructure.UserRepository;
+import com.example.demo.user.infrastructure.UserJpaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ public class UserControllerTest {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -86,7 +86,7 @@ public class UserControllerTest {
                         .queryParam("certificationCode","bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"))
                 .andExpect(status().isFound());
 
-        UserEntity userEntity = userRepository.findById(2L).get();
+        UserEntity userEntity = userJpaRepository.findById(2L).get();
         assertThat(userEntity.getStatus()).isEqualTo(UserStatus.ACTIVE);
 
     }
