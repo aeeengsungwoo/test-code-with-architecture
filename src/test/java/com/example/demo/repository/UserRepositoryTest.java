@@ -2,7 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.infrastructure.UserEntity;
-import com.example.demo.user.service.port.UserRepository;
+import com.example.demo.user.infrastructure.UserRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserRepositoryTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepositoryImpl userRepositoryImpl;
 
     @Test
     void findByIdAndStatus_는_유저_데이터를_찾아올_수_있다() {
         // given
 
         //when
-        Optional<UserEntity> result = userRepository.findByIdAndStatus(1, UserStatus.ACTIVE);
+        Optional<UserEntity> result = userRepositoryImpl.findByIdAndStatus(1, UserStatus.ACTIVE);
 
         // then
         assertThat(result.isPresent()).isTrue();
@@ -40,7 +40,7 @@ public class UserRepositoryTest {
         // given
 
         //when
-        Optional<UserEntity> result = userRepository.findByIdAndStatus(1, UserStatus.PENDING);
+        Optional<UserEntity> result = userRepositoryImpl.findByIdAndStatus(1, UserStatus.PENDING);
 
         // then
         assertThat(result.isEmpty()).isTrue();
@@ -50,7 +50,7 @@ public class UserRepositoryTest {
         // given
 
         //when
-        Optional<UserEntity> result = userRepository.findByEmailAndStatus("kok202@naver.com", UserStatus.ACTIVE);
+        Optional<UserEntity> result = userRepositoryImpl.findByEmailAndStatus("kok202@naver.com", UserStatus.ACTIVE);
 
         // then
         assertThat(result.isPresent()).isTrue();
@@ -61,7 +61,7 @@ public class UserRepositoryTest {
         // given
 
         //when
-        Optional<UserEntity> result = userRepository.findByEmailAndStatus("kok20@naver.com", UserStatus.PENDING);
+        Optional<UserEntity> result = userRepositoryImpl.findByEmailAndStatus("kok20@naver.com", UserStatus.PENDING);
 
         // then
         assertThat(result.isEmpty()).isTrue();
