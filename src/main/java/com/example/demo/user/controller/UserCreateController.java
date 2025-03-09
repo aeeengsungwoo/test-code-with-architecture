@@ -1,6 +1,6 @@
 package com.example.demo.user.controller;
 
-import com.example.demo.user.domain.UserCreateDto;
+import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.controller.response.UserResponse;
 import com.example.demo.user.infrastructure.UserEntity;
 import com.example.demo.user.service.UserService;
@@ -23,8 +23,8 @@ public class UserCreateController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserCreateDto userCreateDto) {
-        UserEntity userEntity = userService.create(userCreateDto);
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserCreate userCreate) {
+        UserEntity userEntity = userService.create(userCreate);
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(userController.toResponse(userEntity));

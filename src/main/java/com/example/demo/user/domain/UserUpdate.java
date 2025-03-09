@@ -5,18 +5,15 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class UserCreateDto {
+public class UserUpdate {
 
-    private final String email;
     private final String nickname;
     private final String address;
 
     @Builder
-    public UserCreateDto(
-        @JsonProperty("email") String email,
+    public UserUpdate(
         @JsonProperty("nickname") String nickname,
         @JsonProperty("address") String address) {
-        this.email = email;
         this.nickname = nickname;
         this.address = address;
     }

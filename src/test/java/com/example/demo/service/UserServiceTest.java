@@ -3,7 +3,7 @@ package com.example.demo.service;
 import com.example.demo.common.exception.CertificationCodeNotMatchedException;
 import com.example.demo.common.exception.ResourceNotFoundException;
 import com.example.demo.user.domain.UserStatus;
-import com.example.demo.user.domain.UserCreateDto;
+import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.infrastructure.UserEntity;
 import com.example.demo.user.service.UserService;
 import org.junit.jupiter.api.AfterEach;
@@ -107,7 +107,7 @@ public class UserServiceTest {
     @Test
     void UserCreateDto를_이용하여_유저를_생성할_수_있다(){
         //given
-        UserCreateDto userCreateDto = UserCreateDto.builder()
+        UserCreate userCreate = UserCreate.builder()
                 .email("kok202@naver.com")
                 .address("Seoul")
                 .nickname("kok202-k")
@@ -116,7 +116,7 @@ public class UserServiceTest {
         BDDMockito.doNothing().when(mailSender).send(any(SimpleMailMessage.class));
 
         //when
-        UserEntity result = userService.create(userCreateDto);
+        UserEntity result = userService.create(userCreate);
 
         //then
         assertThat(result.getId()).isNotNull();

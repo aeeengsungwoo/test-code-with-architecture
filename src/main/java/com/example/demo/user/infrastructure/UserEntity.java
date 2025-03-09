@@ -1,14 +1,8 @@
 package com.example.demo.user.infrastructure;
 
+import com.example.demo.user.domain.User;
 import com.example.demo.user.domain.UserStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,4 +34,28 @@ public class UserEntity {
 
     @Column(name = "last_login_at")
     private Long lastLoginAt;
+
+    public static UserEntity from(User user) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.id = user.getId();
+        userEntity.email = user.getEmail();
+        userEntity.nickname = user.getNickname();
+        userEntity.address = user.getAddress();
+        userEntity.certificationCode = user.getCertificationCode();
+        userEntity.status = user.getStatus();
+        userEntity.lastLoginAt = user.getLastLoginAt();
+        return userEntity;
+    }
+
+    public User toModel() {
+        return User.builder()
+            .id(id)
+            .email(email)
+            .nickname(nickname)
+            .address(address)
+            .certificationCode(certificationCode)
+            .status(status)
+            .lastLoginAt(lastLoginAt)
+            .build();
+    }
 }
